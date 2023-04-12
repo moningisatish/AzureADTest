@@ -1,0 +1,10 @@
+spring.security.oauth2.client.registration.azure.client-id=<your-client-id>
+spring.security.oauth2.client.registration.azure.client-secret=<your-client-secret>
+spring.security.oauth2.client.registration.azure.authorization-grant-type=authorization_code
+spring.security.oauth2.client.registration.azure.redirect-uri=https://localhost:8080/login/oauth2/code/azure
+spring.security.oauth2.client.registration.azure.scope=openid profile offline_access
+spring.security.oauth2.client.provider.azure.authorization-uri=https://<your-tenant-name>.b2clogin.com/<your-tenant-name>.onmicrosoft.com/<your-policy-name>/oauth2/v2.0/authorize
+spring.security.oauth2.client.provider.azure.token-uri=https://<your-tenant-name>.b2clogin.com/<your-tenant-name>.onmicrosoft.com/<your-policy-name>/oauth2/v2.0/token
+spring.security.oauth2.client.provider.azure.user-info-uri=https://<your-tenant-name>.b2clogin.com/<your-tenant-name>.onmicrosoft.com/<your-policy-name>/oauth2/v2.0/userinfo
+spring.security.oauth2.client.provider.azure.jwk-set-uri=https://<your-tenant-name>.b2clogin.com/<your-tenant-name>.onmicrosoft.com/<your-policy-name>/discovery/v2.0/keys
+spring.security.oauth2.client.provider.azure.user-name-attribute=name
