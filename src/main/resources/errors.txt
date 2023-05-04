@@ -1,0 +1,55 @@
+package org.example.config;
+
+
+import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private JwtDecoder jwtDecoder;
+    @Override
+    protected void configure( HttpSecurity http ) throws Exception {
+
+        http.authorizeRequests()
+                .antMatchers( "/oauth2/**", "/login/**" ).permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .oauth2Login(oauth2Login -> oauth2Login.successHandler(this::onAuthenticationSuccess));
+
+    }
+
+    private void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
+        OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+        System.out.println("oauth token" + oAuth2AuthenticationToken);
+
+        OAuth2User oAuth2User = oAuth2AuthenticationToken.getPrincipal();
+        String accessToken = null;
+        if(oAuth2User.getAttributes().containsKey("code")){
+            accessToken = oAuth2User.getAttribute("code").toString();
+        }
+        if(accessToken != null){
+            DecodedJWT decodedJWT = (DecodedJWT) jwtDecoder.decode(accessToken);
+        }else{
+            System.out.println("Access token not found");
+        }
+    }
+    @Bean
+    public JwtDecoder jwtDecoder(){
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri("https://byoidpoc.b2clogin.com/byoidpoc.onmicrosoft.com/B2C_1A_STDSigninOnly/discovery/v2.0/keys").build();
+        return jwtDecoder;
+    }
+}
