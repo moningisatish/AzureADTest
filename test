@@ -1,18 +1,14 @@
-<project name="MyProject" default="build">
-
-  <!-- Define properties -->
-  <property name="maven.home" value="/path/to/maven"/>
-  <property name="project.dir" value="."/>
-
-  <!-- Define tasks -->
-  <target name="build">
-    <!-- Call Maven task -->
-    <exec executable="${maven.home}/bin/mvn">
-      <arg value="-f"/>
-      <arg value="${project.dir}/pom.xml"/>
-      <arg value="clean"/>
-      <arg value="install"/>
-    </exec>
-  </target>
-
-</project>
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-clean-plugin</artifactId>
+      <version>3.1.0</version>
+    </plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-install-plugin</artifactId>
+      <version>2.5.2</version>
+    </plugin>
+  </plugins>
+</build>
