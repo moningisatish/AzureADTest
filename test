@@ -1,0 +1,18 @@
+<project name="MyProject" default="build">
+
+  <!-- Define properties -->
+  <property name="maven.home" value="/path/to/maven"/>
+  <property name="project.dir" value="."/>
+
+  <!-- Define tasks -->
+  <target name="build">
+    <!-- Call Maven task -->
+    <exec executable="${maven.home}/bin/mvn">
+      <arg value="-f"/>
+      <arg value="${project.dir}/pom.xml"/>
+      <arg value="clean"/>
+      <arg value="install"/>
+    </exec>
+  </target>
+
+</project>
