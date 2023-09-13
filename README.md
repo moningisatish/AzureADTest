@@ -1,4 +1,1 @@
-# AzureADTest
-
-
-satish@satishmoningigmail.onmicrosoft.com
+select * from edtcsrerrors where erroruid in (select erroruid from edtcsrerrorref where edtcsrpolicyuid in (select edtcsrpolicyuid from edtcsrpolicy where edicompno = 17 and eedtstatus in ('New','Updated')))
