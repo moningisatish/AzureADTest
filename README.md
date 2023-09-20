@@ -1,1 +1,1 @@
-select * from edtcsrerrors where erroruid in (select erroruid from edtcsrerrorref where edtcsrpolicyuid in (select edtcsrpolicyuid from edtcsrpolicy where edicompno = 17 and eedtstatus in ('New','Updated')))
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
