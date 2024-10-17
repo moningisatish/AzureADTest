@@ -1,0 +1,7 @@
+index=my_index
+| rex "Test1:(?<test1>\d+)" 
+| rex "\"test2\"\s*:\s*\"(?<test2>\w+)\""
+| rex "\"test3\"\s*:\s*\"(?<test3>\w+)\""
+| stats values(test2) as test2, values(test3) as test3 by test1
+| search test2="AP" test3="REFER"
+| table test1, test2, test3
