@@ -1,7 +1,21 @@
-index=my_index
-| rex "Test1:(?<test1>\d+)" 
-| rex "\"test2\"\s*:\s*\"(?<test2>\w+)\""
-| rex "\"test3\"\s*:\s*\"(?<test3>\w+)\""
-| stats values(test2) as test2, values(test3) as test3 by test1
-| search test2="AP" test3="REFER"
-| table test1, test2, test3
+<variable name="LOG_DIR" value="C:/LogSplit" />
+
+	<appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<discriminator>
+			<key>loggerName</key>
+			<defaultValue>common</defaultValue>
+		</discriminator>
+
+		<sift>
+			<appender name="COMPANY_LOG_${loggerName}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${LOG_DIR}/${loggerName}/company-${loggerName}.log</file>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>${LOG_DIR}/${loggerName}/company-${loggerName}.%d{yyyy-MM-dd}.log</fileNamePattern>
+					<maxHistory>30</maxHistory>
+				</rollingPolicy>
+				<encoder>
+					<pattern>%d{yyyy-MM-dd HH:mm:ss:sss} [%level] [%thread] [%logger:%line] %msg%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
