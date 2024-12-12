@@ -1,23 +1,39 @@
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.springframework.stereotype.Component;
+List<EdtcsrpolicyDTO> edtcsrpolicyList = new ArrayList<>();
+		EdtcsrpolicyDTO edtcsrpolicyDTO;
+		for(Edtcsrpolicy edtcsrpolicy : records) {
+			edtcsrpolicy.setTimezone(request.getTimeZone());
+			edtcsrpolicyDTO = mapper.toDto(edtcsrpolicy);
+			if(edtcsrpolicy.getEdtcsrclientcompany() != null) {
+				edtcsrpolicyDTO.setEdicompno(edtcsrpolicy.getEdtcsrclientcompany().getClientcompanyidhsbassigned());
+			}
+			List<Edtcsrins> edtcsrInList = edtcsrpolicy.getEdtcsrins();
+			if (edtcsrInList != null && !edtcsrInList.isEmpty()) {
+				List<EdtcsrinDTO> insuranceList = new ArrayList<>();
+				for(Edtcsrins edtcsrIn : edtcsrInList) {
+					insuranceList.add(edtcsrInsMapper.toDTO(edtcsrIn));
+				}
+				edtcsrpolicyDTO.setEdtcsrins(insuranceList);
+			}
 
-@Aspect
-@Component
-public class ExecutionTimeAspect {
+			List<Edtcsrloc> edtcsrlocList = edtcsrpolicy.getEdtcsrlocs();
+			if (edtcsrlocList != null && !edtcsrlocList.isEmpty()) {
+				List<EdtcsrlocDTO> edtcsrlocDTOList = new ArrayList<>();
+				for(Edtcsrloc edtcsrloc : edtcsrlocList) {
+					edtcsrlocDTOList.add(edtcsrlocMapper.toDTO(edtcsrloc));
+				}
+				edtcsrpolicyDTO.setEdtcsrlocs(edtcsrlocDTOList);
+			}
 
-    @Around("execution(* com.yourpackage..*(..))") // Replace with your package
-    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
+			List<Edtcsrpvline> edtcsrpvlineList = edtcsrpolicy.getEdtcsrpvlines();
+			if (edtcsrpvlineList != null && !edtcsrpvlineList.isEmpty()) {
+				List<EdtcsrpvlineDTO> edtcsrpvlineDTOList = new ArrayList<>();
+				for(Edtcsrpvline edtcsrpvline : edtcsrpvlineList) {
+					edtcsrpvlineDTOList.add(edtcsrpvlineMapper.toDTO(edtcsrpvline));
+				}
 
-        Object proceed = joinPoint.proceed(); // Proceed with method execution
+				edtcsrpolicyDTO.setEdtcsrpvlines(edtcsrpvlineDTOList);
+			}
+			edtcsrpolicyList.add(edtcsrpolicyDTO);
+		}
 
-        long endTime = System.currentTimeMillis();
-        long duration = endTime - startTime;
-
-        System.out.println(joinPoint.getSignature() + " executed in " + duration + "ms");
-        
-        return proceed;
-    }
-}
+	
