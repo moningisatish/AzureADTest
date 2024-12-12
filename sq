@@ -1,39 +1,35 @@
-List<EdtcsrpolicyDTO> edtcsrpolicyList = new ArrayList<>();
-		EdtcsrpolicyDTO edtcsrpolicyDTO;
-		for(Edtcsrpolicy edtcsrpolicy : records) {
-			edtcsrpolicy.setTimezone(request.getTimeZone());
-			edtcsrpolicyDTO = mapper.toDto(edtcsrpolicy);
-			if(edtcsrpolicy.getEdtcsrclientcompany() != null) {
-				edtcsrpolicyDTO.setEdicompno(edtcsrpolicy.getEdtcsrclientcompany().getClientcompanyidhsbassigned());
-			}
-			List<Edtcsrins> edtcsrInList = edtcsrpolicy.getEdtcsrins();
-			if (edtcsrInList != null && !edtcsrInList.isEmpty()) {
-				List<EdtcsrinDTO> insuranceList = new ArrayList<>();
-				for(Edtcsrins edtcsrIn : edtcsrInList) {
-					insuranceList.add(edtcsrInsMapper.toDTO(edtcsrIn));
-				}
-				edtcsrpolicyDTO.setEdtcsrins(insuranceList);
-			}
+List<EdtcsrpolicyDTO> edtcsrpolicyList = records.stream().map(edtcsrpolicy -> {
+    edtcsrpolicy.setTimezone(request.getTimeZone());
+    EdtcsrpolicyDTO edtcsrpolicyDTO = mapper.toDto(edtcsrpolicy);
 
-			List<Edtcsrloc> edtcsrlocList = edtcsrpolicy.getEdtcsrlocs();
-			if (edtcsrlocList != null && !edtcsrlocList.isEmpty()) {
-				List<EdtcsrlocDTO> edtcsrlocDTOList = new ArrayList<>();
-				for(Edtcsrloc edtcsrloc : edtcsrlocList) {
-					edtcsrlocDTOList.add(edtcsrlocMapper.toDTO(edtcsrloc));
-				}
-				edtcsrpolicyDTO.setEdtcsrlocs(edtcsrlocDTOList);
-			}
+    // Set Edicompno if Edtcsrclientcompany is not null
+    if (edtcsrpolicy.getEdtcsrclientcompany() != null) {
+        edtcsrpolicyDTO.setEdicompno(edtcsrpolicy.getEdtcsrclientcompany().getClientcompanyidhsbassigned());
+    }
 
-			List<Edtcsrpvline> edtcsrpvlineList = edtcsrpolicy.getEdtcsrpvlines();
-			if (edtcsrpvlineList != null && !edtcsrpvlineList.isEmpty()) {
-				List<EdtcsrpvlineDTO> edtcsrpvlineDTOList = new ArrayList<>();
-				for(Edtcsrpvline edtcsrpvline : edtcsrpvlineList) {
-					edtcsrpvlineDTOList.add(edtcsrpvlineMapper.toDTO(edtcsrpvline));
-				}
+    // Map Edtcsrins list
+    List<EdtcsrinDTO> insuranceList = Optional.ofNullable(edtcsrpolicy.getEdtcsrins())
+        .orElse(Collections.emptyList())
+        .stream()
+        .map(edtcsrInsMapper::toDTO)
+        .collect(Collectors.toList());
+    edtcsrpolicyDTO.setEdtcsrins(insuranceList);
 
-				edtcsrpolicyDTO.setEdtcsrpvlines(edtcsrpvlineDTOList);
-			}
-			edtcsrpolicyList.add(edtcsrpolicyDTO);
-		}
+    // Map Edtcsrlocs list
+    List<EdtcsrlocDTO> edtcsrlocDTOList = Optional.ofNullable(edtcsrpolicy.getEdtcsrlocs())
+        .orElse(Collections.emptyList())
+        .stream()
+        .map(edtcsrlocMapper::toDTO)
+        .collect(Collectors.toList());
+    edtcsrpolicyDTO.setEdtcsrlocs(edtcsrlocDTOList);
 
-	
+    // Map Edtcsrpvlines list
+    List<EdtcsrpvlineDTO> edtcsrpvlineDTOList = Optional.ofNullable(edtcsrpolicy.getEdtcsrpvlines())
+        .orElse(Collections.emptyList())
+        .stream()
+        .map(edtcsrpvlineMapper::toDTO)
+        .collect(Collectors.toList());
+    edtcsrpolicyDTO.setEdtcsrpvlines(edtcsrpvlineDTOList);
+
+    return edtcsrpolicyDTO;
+}).collect(Collectors.toList());
